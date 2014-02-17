@@ -75,7 +75,7 @@
     	_shouldSearchInBackground = NO;
 	_resultsArray = [NSMutableArray array];
 	
-	_tokenField = [[TITokenField alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, 42)];
+	_tokenField = [[[self tokenFieldClass] alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.width, 42)];
 	[_tokenField addTarget:self action:@selector(tokenFieldDidBeginEditing:) forControlEvents:UIControlEventEditingDidBegin];
 	[_tokenField addTarget:self action:@selector(tokenFieldDidEndEditing:) forControlEvents:UIControlEventEditingDidEnd];
 	[_tokenField addTarget:self action:@selector(tokenFieldTextDidChange:) forControlEvents:UIControlEventEditingChanged];
@@ -228,7 +228,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	
 	id representedObject = [_resultsArray objectAtIndex:indexPath.row];
-    TIToken * token = [[TIToken alloc] initWithTitle:[self displayStringForRepresentedObject:representedObject] representedObject:representedObject];
+    TIToken * token = [[[_tokenField tokenClass] alloc] initWithTitle:[self displayStringForRepresentedObject:representedObject] representedObject:representedObject];
     [_tokenField addToken:token];
 	
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -266,6 +266,10 @@
 }
 
 #pragma mark Results Methods
+- (Class)tokenFieldClass {
+  return [TITokenField class];
+}
+
 - (NSString *)displayStringForRepresentedObject:(id)object {
 	
 	if ([_tokenField.delegate respondsToSelector:@selector(tokenField:displayStringForRepresentedObject:)]){
@@ -619,6 +623,10 @@ NSString * const kTextHidden = @"\u200D"; // Zero-Width Joiner
 }
 
 #pragma mark Token Handling
+- (Class)tokenClass {
+  return [TIToken class];
+}
+
 - (TIToken *)addTokenWithTitle:(NSString *)title {
 	return [self addTokenWithTitle:title representedObject:nil];
 }
@@ -626,7 +634,7 @@ NSString * const kTextHidden = @"\u200D"; // Zero-Width Joiner
 - (TIToken *)addTokenWithTitle:(NSString *)title representedObject:(id)object {
 	
 	if (title.length){
-		TIToken * token = [[TIToken alloc] initWithTitle:title representedObject:object font:self.font];
+		TIToken * token = [[[self tokenClass] alloc] initWithTitle:title representedObject:object font:self.font];
 		[self addToken:token];
 		return token;
 	}

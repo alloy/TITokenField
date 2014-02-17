@@ -70,6 +70,7 @@
 @property (nonatomic, copy) NSArray * sourceArray;
 @property (weak, nonatomic, readonly) NSArray * tokenTitles;
 
+- (Class)tokenFieldClass;
 - (void)updateContentSize;
 
 @end
@@ -95,6 +96,7 @@ typedef enum {
 @property (nonatomic) int tokenLimit;
 @property (nonatomic, strong) NSCharacterSet * tokenizingCharacters;
 
+- (Class)tokenClass;
 - (void)addToken:(TIToken *)title;
 - (TIToken *)addTokenWithTitle:(NSString *)title;
 - (TIToken *)addTokenWithTitle:(NSString *)title representedObject:(id)object;
