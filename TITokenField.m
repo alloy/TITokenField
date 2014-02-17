@@ -1050,7 +1050,7 @@ CGFloat const kDisclosureThickness = 2.5;
 UILineBreakMode const kLineBreakMode = UILineBreakModeTailTruncation;
 
 @interface TIToken (Private)
-CGPathRef CGPathCreateTokenPath(CGSize size, BOOL innerPath);
+CGPathRef CGPathCreateTokenPath(CGSize size, CGFloat inset);
 CGPathRef CGPathCreateDisclosureIndicatorPath(CGPoint arrowPointFront, CGFloat height, CGFloat thickness, CGFloat * width);
 - (BOOL)getTintColorRed:(CGFloat *)red green:(CGFloat *)green blue:(CGFloat *)blue alpha:(CGFloat *)alpha;
 @end
@@ -1198,7 +1198,7 @@ CGPathRef CGPathCreateDisclosureIndicatorPath(CGPoint arrowPointFront, CGFloat h
 	
 	// Draw the outline.
 	CGContextSaveGState(context);
-	CGPathRef outlinePath = CGPathCreateTokenPath(self.bounds.size, NO);
+	CGPathRef outlinePath = CGPathCreateTokenPath(self.bounds.size, 0);
 	CGContextAddPath(context, outlinePath);
 	CGPathRelease(outlinePath);
 	
@@ -1228,7 +1228,7 @@ CGPathRef CGPathCreateDisclosureIndicatorPath(CGPoint arrowPointFront, CGFloat h
 	
 	CGContextRestoreGState(context);
 	
-	CGPathRef innerPath = CGPathCreateTokenPath(self.bounds.size, YES);
+	CGPathRef innerPath = CGPathCreateTokenPath(self.bounds.size, (1 / [[UIScreen mainScreen] scale]));
     
     // Draw a white background so we can use alpha to lighten the inner gradient
     CGContextSaveGState(context);
@@ -1303,11 +1303,15 @@ CGPathRef CGPathCreateDisclosureIndicatorPath(CGPoint arrowPointFront, CGFloat h
 	[_title drawInRect:textBounds withFont:_font lineBreakMode:kLineBreakMode];
 }
 
-CGPathRef CGPathCreateTokenPath(CGSize size, BOOL innerPath) {
+- (CGPathRef)createTokenPathWithInset:(CGFloat)inset {
+  return CGPathCreateTokenPath(self.bounds.size, inset);
+}
+
+CGPathRef CGPathCreateTokenPath(CGSize size, CGFloat inset) {
 	
 	CGMutablePathRef path = CGPathCreateMutable();
 	CGFloat arcValue = (size.height / 2) - 1;
-	CGFloat radius = arcValue - (innerPath ? (1 / [[UIScreen mainScreen] scale]) : 0);
+	CGFloat radius = arcValue - inset;
 	CGPathAddArc(path, NULL, arcValue, arcValue, radius, (M_PI / 2), (M_PI * 3 / 2), NO);
 	CGPathAddArc(path, NULL, size.width - arcValue, arcValue, radius, (M_PI  * 3 / 2), (M_PI / 2), NO);
 	CGPathCloseSubpath(path);

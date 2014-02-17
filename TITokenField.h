@@ -140,6 +140,8 @@ typedef enum {
 - (instancetype)initWithTitle:(NSString *)aTitle representedObject:(id)object;
 - (instancetype)initWithTitle:(NSString *)aTitle representedObject:(id)object font:(UIFont *)aFont;
 
+- (CGPathRef)createTokenPathWithInset:(CGFloat)inset;
+
 + (UIColor *)blueTintColor;
 + (UIColor *)redTintColor;
 + (UIColor *)greenTintColor;
